@@ -7,12 +7,10 @@ import { ITodoItem } from '@/types'
 import { ref } from 'vue'
 
 export interface Props {
-  item: ITodoItem
+  item: ITodoItem & { description: string }
 }
 
 const props = defineProps<Props>()
-
-const text = ref('')
 </script>
 <template>
   <div class="px-4 py-4 max-w-md">
@@ -22,7 +20,9 @@ const text = ref('')
 
     <FieldSet id="todoitem-title">
       <template #label>Title</template>
-      <template #input="{ id }"><Input :id="id" v-model="text" /></template>
+      <template #input="{ id }">
+        <Input :id="id" v-model="item.title" />
+      </template>
     </FieldSet>
 
     <div class="h-4"></div>
@@ -30,7 +30,7 @@ const text = ref('')
     <FieldSet id="todoitem-title">
       <template #label>Description</template>
       <template #input="{ id }">
-        <TextArea :id="id" v-model="text" />
+        <TextArea :id="id" v-model="item.description" />
       </template>
     </FieldSet>
   </div>
