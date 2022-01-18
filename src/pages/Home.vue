@@ -4,34 +4,11 @@ import { ref } from 'vue'
 import TodoItem from '../components/TodoItem.vue'
 import type { ITodoItem } from '../types'
 
-const todoItems = ref<ITodoItem[]>([
-  {
-    title: 'Learn firestore',
-    completed: false,
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, nostrum ipsum dolor sit amet.',
-    favorited: false,
-  },
-  {
-    title: 'Learn firestore',
-    completed: false,
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, nostrum ipsum dolor sit amet.',
-    favorited: true,
-    date: 'TODO',
-  },
-  {
-    title: 'Learn vue.js',
-    completed: false,
-    favorited: true,
-  },
-  {
-    title: 'Implement my app',
-    completed: false,
-    favorited: true,
-    date: 'TODO',
-  },
-])
+export interface Props {
+  todoItems: ITodoItem[]
+}
+
+const props = defineProps<Props>()
 </script>
 
 <template>
@@ -44,7 +21,7 @@ const todoItems = ref<ITodoItem[]>([
     </div>
     <div class="h-5"></div>
     <div class="flex flex-col gap-y-4">
-      <TodoItem v-for="todoItem in todoItems" :item="todoItem" />
+      <TodoItem v-for="todoItem in props.todoItems" :item="todoItem" />
     </div>
 
     <div class="fixed bottom-0 inset-x-0 px-4 py-5">
