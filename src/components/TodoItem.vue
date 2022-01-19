@@ -29,7 +29,7 @@ const emits = defineEmits<Emits>()
       <Checkbox v-model="props.item.completed" />
     </div>
     <div class="w-3"></div>
-    <div @dblclick="emits('clicked-edit')">
+    <div @dblclick="emits('clicked-edit')" @touchend="emits('clicked-edit')">
       <h3 class="font-bold text-lg leading-none text-gray-900">
         {{ props.item.title }}
       </h3>
