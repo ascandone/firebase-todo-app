@@ -2,12 +2,17 @@
 import { useTodoItems } from '../stores/todoItems'
 import TodoItem from '../components/TodoItem.vue'
 import { useRouter } from 'vue-router'
+import { ITodoItem } from '@/types'
 
 const router = useRouter()
 const itemsStore = useTodoItems()
 
 function addNewTask() {
   router.push('/new')
+}
+
+function editTask(todoItem: ITodoItem) {
+  router.push(`/edit/${todoItem.id}`)
 }
 </script>
 
@@ -21,7 +26,11 @@ function addNewTask() {
     </div>
     <div class="h-5"></div>
     <div class="flex flex-col gap-y-4">
-      <TodoItem v-for="todoItem in itemsStore.todoItems" :item="todoItem" />
+      <TodoItem
+        @clicked-edit="editTask(todoItem)"
+        v-for="todoItem in itemsStore.todoItems"
+        :item="todoItem"
+      />
     </div>
 
     <div class="fixed bottom-0 inset-x-0 px-4 py-5">
