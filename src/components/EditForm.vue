@@ -34,10 +34,12 @@ function handleSubmit() {
   const payloadDescription =
     description.value.trim().length === 0 ? undefined : description.value.trim()
 
-  emits('submit', {
-    title: title.value,
-    description: payloadDescription,
-  })
+  if (title.value.trim().length !== 0) {
+    emits('submit', {
+      title: title.value,
+      description: payloadDescription,
+    })
+  }
 }
 </script>
 <template>
