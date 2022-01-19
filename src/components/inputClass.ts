@@ -3,5 +3,6 @@ export const inputClass = {
     true,
   'hover:bg-transparent hover:ring ring-pink-200': true,
   'transition-all duration-150': true,
-  'border border-transparent focus:border-pink-300 focus:bg-transparent': true,
+  'border border-transparent focus:border-pink-300 focus:ring focus:bg-transparent':
+    true,
 }

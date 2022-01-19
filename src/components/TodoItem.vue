@@ -19,11 +19,7 @@ const props = defineProps<Props>()
       'opacity-70': props.item.completed,
     }"
   >
-    <div
-      :class="{
-        'mt-4': props.item.description !== undefined,
-      }"
-    >
+    <div class="mt-2">
       <Checkbox v-model="props.item.completed" />
     </div>
     <div class="w-3"></div>
@@ -38,7 +34,6 @@ const props = defineProps<Props>()
         >
           {{ props.item.description }}
         </p>
-        <!-- <CategoryChip>personal</CategoryChip> -->
       </div>
       <div v-if="props.item.date !== undefined" class="mt-2">
         <DateChip />

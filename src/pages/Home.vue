@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { useTodoItems } from '../stores/todoItems'
 import TodoItem from '../components/TodoItem.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const itemsStore = useTodoItems()
+
+function addNewTask() {
+  router.push('/new')
+}
 </script>
 
 <template>
@@ -22,7 +28,7 @@ const itemsStore = useTodoItems()
       <div
         class="border shadow-xl px-5 py-3 rounded-3xl text-gray-400 text-semibold mx-auto max-w-xs"
       >
-        Write a new task
+        <button @click="addNewTask">Write a new task</button>
       </div>
     </div>
   </div>
