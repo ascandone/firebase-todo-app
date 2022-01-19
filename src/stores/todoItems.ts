@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ITodoItem } from '../types'
-
+import { Payload } from '../components/EditForm.vue'
 export interface State {
   nextId: 4
   todoItems: ITodoItem[]
@@ -53,6 +53,17 @@ export const useTodoItems = defineStore('todoItems', {
         favorited: false,
         id: this.nextId++,
       })
+    },
+
+    updateTodo(id: string, payload: Payload) {
+      const item = this.todoItems.find((thisItem) => String(thisItem.id) === id)
+
+      if (item !== undefined) {
+        item.title = payload.title
+        if (payload.description) {
+          item.description = payload.description
+        }
+      }
     },
   },
   getters: {
