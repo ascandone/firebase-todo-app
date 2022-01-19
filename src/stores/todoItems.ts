@@ -55,4 +55,12 @@ export const useTodoItems = defineStore('todoItems', {
       })
     },
   },
+  getters: {
+    activeItems(state) {
+      return state.todoItems.filter((item) => !item.completed)
+    },
+    completedItems(state) {
+      return state.todoItems.filter((item) => item.completed)
+    },
+  },
 })
