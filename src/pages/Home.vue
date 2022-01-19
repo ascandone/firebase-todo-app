@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
+import { useTodoItems } from '../stores/todoItems'
 import TodoItem from '../components/TodoItem.vue'
-import type { ITodoItem } from '../types'
 
-export interface Props {
-  todoItems: ITodoItem[]
-}
-
-const props = defineProps<Props>()
+const itemsStore = useTodoItems()
 </script>
 
 <template>
-  <div class="w-screen h-screen bg-zinc-100 px-3">
+  <div class="w-screen h-screen px-3">
     <div class="h-4"></div>
     <div>
       <h2 class="font-bold text-4xl">Today</h2>
@@ -21,7 +15,7 @@ const props = defineProps<Props>()
     </div>
     <div class="h-5"></div>
     <div class="flex flex-col gap-y-4">
-      <TodoItem v-for="todoItem in props.todoItems" :item="todoItem" />
+      <TodoItem v-for="todoItem in itemsStore.todoItems" :item="todoItem" />
     </div>
 
     <div class="fixed bottom-0 inset-x-0 px-4 py-5">

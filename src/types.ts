@@ -1,9 +1,5 @@
-export interface ITodoList {
-  name: string
-  color: string
-}
-
 export interface ITodoItem {
+  id: number
   title: string
   completed: boolean
   favorited: boolean

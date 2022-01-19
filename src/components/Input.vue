@@ -17,6 +17,7 @@ function update(e: Event) {
 </script>
 <template>
   <input
+    autocomplete="off"
     :id="props.id"
     type="text"
     @input="update"
