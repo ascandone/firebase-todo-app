@@ -3,7 +3,7 @@ import FieldSet from './FieldSet.vue'
 import Input from './Input.vue'
 import TextArea from './TextArea.vue'
 import { ref } from 'vue'
-import { emit } from 'process'
+import Button from '../components/Button.vue'
 
 export interface Props {
   submitLabel: string
@@ -63,12 +63,9 @@ function handleSubmit() {
     <div class="h-5"></div>
 
     <div class="flex w-full justify-end">
-      <button
-        class="font-bold border leading-none px-3 py-2 rounded-md shadow-sm"
-        type="submit"
-      >
+      <Button type="submit">
         {{ props.submitLabel }}
-      </button>
+      </Button>
     </div>
   </form>
 </template>
