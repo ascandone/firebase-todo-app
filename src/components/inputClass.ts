@@ -7,4 +7,6 @@ export const inputClass = (error: boolean) => ({
   'transition-all duration-150': true,
   'border border-transparent focus:border-pink-300 focus:ring focus:bg-transparent':
     true,
+  'disabled:opacity-60 disabled:border-transparent disabled:pointer-default disabled:bg-gray-100 disabled:hover:ring-transparent':
+    true,
 })

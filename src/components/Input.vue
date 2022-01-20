@@ -8,6 +8,7 @@ export interface Props {
   id?: string
   type?: Type
   validationMsg?: string
+  disabled?: boolean
 }
 
 export interface Emits {
@@ -17,6 +18,7 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
+  disabled: false,
 })
 
 const emit = defineEmits<Emits>()
@@ -27,6 +29,7 @@ function update(e: Event) {
 </script>
 <template>
   <input
+    :disabled="props.disabled"
     autocomplete="off"
     :id="props.id"
     :type="props.type"
