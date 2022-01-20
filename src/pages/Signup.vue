@@ -7,6 +7,7 @@ import { useValidation } from '@/useValidation'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useEmailValidation, usePasswordValidation } from '@/validations'
 
 const router = useRouter()
 
@@ -16,18 +17,8 @@ type AuthResponse =
   | { type: 'GOT_ERROR'; message: string }
 
 const authResponse = ref<AuthResponse>({ type: 'NOT_ASKED' })
-
-const email = useValidation((field) => {
-  if (!field.includes('@')) {
-    return 'Insert a valid email'
-  }
-})
-
-const password = useValidation((field) => {
-  if (field.length < 6) {
-    return 'Password should be at leat 6 characters'
-  }
-})
+const email = useEmailValidation()
+const password = usePasswordValidation()
 
 const confirmPassword = useValidation((field) => {
   if (field !== password.value) {
