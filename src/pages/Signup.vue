@@ -2,7 +2,20 @@
 import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import FieldSet from '@/components/FieldSet.vue'
+import Alert from '@/components/Alert.vue'
 import { useValidation } from '@/useValidation'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+type AuthResponse =
+  | { type: 'NOT_ASKED' }
+  | { type: 'LOADING' }
+  | { type: 'GOT_ERROR'; message: string }
+
+const authResponse = ref<AuthResponse>({ type: 'NOT_ASKED' })
 
 const email = useValidation((field) => {
   if (!field.includes('@')) {
@@ -11,8 +24,8 @@ const email = useValidation((field) => {
 })
 
 const password = useValidation((field) => {
-  if (field === '') {
-    return 'Insert a valid password'
+  if (field.length < 6) {
+    return 'Password should be at leat 6 characters'
   }
 })
 
@@ -22,7 +35,7 @@ const confirmPassword = useValidation((field) => {
   }
 })
 
-function onSubmit() {
+async function onSubmit() {
   email.validate()
   password.validate()
   confirmPassword.validate()
@@ -33,6 +46,21 @@ function onSubmit() {
     confirmPassword.validationMsg === undefined
   ) {
     console.log(email.value, password.value)
+    authResponse.value = { type: 'LOADING' }
+    const auth = getAuth()
+    try {
+      const creds = await createUserWithEmailAndPassword(
+        auth,
+        email.value,
+        password.value
+      )
+      router.push('/')
+    } catch (e) {
+      authResponse.value = {
+        type: 'GOT_ERROR',
+        message: (e as Error).message,
+      }
+    }
   }
 }
 </script>
@@ -41,12 +69,21 @@ function onSubmit() {
   <div class="px-5 py-2">
     <div class="max-w-sm mx-auto">
       <h3 class="font-bold text-2xl mt-2 mb-4">Register</h3>
+
+      <div v-if="authResponse.type === 'GOT_ERROR'">
+        <Alert type="error">
+          {{ authResponse.message }}
+        </Alert>
+        <div class="h-5"></div>
+      </div>
+
       <form @submit.prevent="onSubmit" class="space-y-4">
         <FieldSet id="email">
           <template #label>Email</template>
           <template #input>
             <Input
               v-model="email.value"
+              :disabled="authResponse.type === 'LOADING'"
               type="email"
               :validation-msg="email.validationMsg"
               @blur="email.validate"
@@ -59,6 +96,7 @@ function onSubmit() {
           <template #input>
             <Input
               v-model="password.value"
+              :disabled="authResponse.type === 'LOADING'"
               type="password"
               :validation-msg="password.validationMsg"
               @blur="password.validate"
@@ -71,6 +109,7 @@ function onSubmit() {
           <template #input>
             <Input
               v-model="confirmPassword.value"
+              :disabled="authResponse.type === 'LOADING'"
               type="password"
               :validation-msg="confirmPassword.validationMsg"
               @blur="confirmPassword.validate"
