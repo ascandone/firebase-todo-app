@@ -11,16 +11,11 @@ function handleSubmit(payload: Payload) {
 }
 </script>
 <template>
-  <div class="px-4 py-4 max-w-md">
-    <h2 class="font-bold text-2xl">Create task</h2>
-
-    <div class="h-3"></div>
-
-    <EditForm
-      @submit="handleSubmit"
-      submit-label="Create"
-      initial-title=""
-      initial-description=""
-    />
-  </div>
+  <EditForm
+    header="Create task"
+    submit-label="Create"
+    initial-title=""
+    initial-description=""
+    @submit="handleSubmit"
+  />
 </template>
