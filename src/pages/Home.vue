@@ -3,6 +3,7 @@ import { TransitionGroup } from 'vue'
 import { useTodoItems } from '../stores/todoItems'
 import TodoItem from '../components/TodoItem.vue'
 import ChevronIcon from '../components/ChevronIcon.vue'
+import { PlusIcon } from '@heroicons/vue/solid'
 import { useRouter } from 'vue-router'
 import { ITodoItem } from '@/types'
 import { ref } from 'vue'
@@ -61,12 +62,13 @@ const collapsedCompleted = ref(false)
       </div>
     </TransitionGroup>
 
-    <div class="fixed bottom-0 inset-x-0 px-4 py-5">
-      <div
-        class="border shadow-xl px-5 py-3 rounded-3xl text-gray-400 text-semibold mx-auto max-w-xs"
+    <div class="fixed bottom-0 right-0 px-4 py-4">
+      <button
+        @click="addNewTask"
+        class="border shadow-xl h-14 w-14 rounded-full bg-pink-500 text-white flex items-center justify-center"
       >
-        <button @click="addNewTask">Write a new task</button>
-      </div>
+        <PlusIcon class="h-8 w-8" />
+      </button>
     </div>
   </div>
 </template>
