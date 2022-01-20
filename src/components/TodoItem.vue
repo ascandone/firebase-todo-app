@@ -19,7 +19,7 @@ const emits = defineEmits<Emits>()
 <template>
   <div
     :class="{
-      'flex transition-opacity duration-200': true,
+      'flex bg-white': true,
       'items-center': props.item.description === undefined,
       'items-start': props.item.description !== undefined,
       'opacity-70': props.item.completed,

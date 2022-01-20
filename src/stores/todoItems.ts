@@ -17,10 +17,9 @@ const todoItems = [
   },
   {
     id: 1,
-    title: 'Learn firestore',
+    title: 'Use firebase API',
     completed: false,
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, nostrum ipsum dolor sit amet.',
+    description: 'A test description',
     favorited: true,
     date: 'TODO',
   },
