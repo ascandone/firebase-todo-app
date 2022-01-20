@@ -8,15 +8,11 @@ import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useEmailValidation, usePasswordValidation } from '@/validations'
+import { RemoteLoading } from '@/remoteLoading'
 
 const router = useRouter()
 
-type AuthResponse =
-  | { type: 'NOT_ASKED' }
-  | { type: 'LOADING' }
-  | { type: 'GOT_ERROR'; message: string }
-
-const authResponse = ref<AuthResponse>({ type: 'NOT_ASKED' })
+const authResponse = ref<RemoteLoading>({ type: 'NOT_ASKED' })
 const email = useEmailValidation()
 const password = usePasswordValidation()
 

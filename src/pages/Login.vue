@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 import { ref, watchEffect } from 'vue'
 import { useEmailValidation, usePasswordValidation } from '@/validations'
 import { useAuth } from '@/stores/auth'
+import { RemoteLoading } from '@/remoteLoading'
 
 const router = useRouter()
 const authStore = useAuth()
@@ -20,12 +21,7 @@ watchEffect(() => {
   }
 })
 
-type AuthResponse =
-  | { type: 'NOT_ASKED' }
-  | { type: 'LOADING' }
-  | { type: 'GOT_ERROR'; message: string }
-
-const authResponse = ref<AuthResponse>({ type: 'NOT_ASKED' })
+const authResponse = ref<RemoteLoading>({ type: 'NOT_ASKED' })
 const email = useEmailValidation()
 const password = usePasswordValidation()
 

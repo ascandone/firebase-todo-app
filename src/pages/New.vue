@@ -11,16 +11,12 @@ import EditForm, { Payload } from '../components/EditForm.vue'
 import WithAuth from '@/components/WithAuth.vue'
 import { User } from 'firebase/auth'
 import { ref } from 'vue'
-
-type AuthResponse =
-  | { type: 'NOT_ASKED' }
-  | { type: 'LOADING' }
-  | { type: 'GOT_ERROR'; message: string }
+import { RemoteLoading } from '@/remoteLoading'
 
 const db = getFirestore()
 const todosRef = collection(db, 'todos')
 
-const creationResponse = ref<AuthResponse>({ type: 'NOT_ASKED' })
+const creationResponse = ref<RemoteLoading>({ type: 'NOT_ASKED' })
 
 const itemsStore = useTodoItems()
 const router = useRouter()
