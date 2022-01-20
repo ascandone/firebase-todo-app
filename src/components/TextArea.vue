@@ -22,6 +22,6 @@ function update(e: Event) {
     :rows="5"
     @input="update"
     :value="modelValue"
-    :class="inputClass"
+    :class="inputClass(false)"
   />
 </template>

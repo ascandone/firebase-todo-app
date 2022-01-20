@@ -1,5 +1,10 @@
 <script setup lang="ts">
-const props = defineProps<{ id: string }>()
+export interface Props {
+  id?: string
+  validationMsg?: string
+}
+
+const props = defineProps<Props>()
 </script>
 <template>
   <fieldset>

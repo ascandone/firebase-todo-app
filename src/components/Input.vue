@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import { inputClass } from './inputClass'
+
+export type Type = 'text' | 'email' | 'password'
+
 export interface Props {
   modelValue: string
   id?: string
-}
-export interface Emits {
-  (e: 'update:modelValue', value: string): void
+  type?: Type
+  validationMsg?: string
 }
 
-const props = defineProps<Props>()
+export interface Emits {
+  (e: 'update:modelValue', value: string): void
+  (e: 'blur'): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  type: 'text',
+})
+
 const emit = defineEmits<Emits>()
 
 function update(e: Event) {
@@ -19,9 +29,16 @@ function update(e: Event) {
   <input
     autocomplete="off"
     :id="props.id"
-    type="text"
+    :type="props.type"
     @input="update"
+    @blur="emit('blur')"
     :value="modelValue"
-    :class="inputClass"
+    :class="inputClass(props.validationMsg !== undefined)"
   />
+  <span
+    v-if="props.validationMsg"
+    class="text-red-700 font-semibold leading-none text-xs"
+  >
+    {{ props.validationMsg }}
+  </span>
 </template>
