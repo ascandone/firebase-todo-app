@@ -1,37 +1,28 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import FieldSet from '@/components/FieldSet.vue'
+import { useValidation } from '@/useValidation'
 
-const email = ref('')
-const emailValidationMsg = ref<string | undefined>(undefined)
-
-function validateEmail() {
-  if (email.value === '' || !email.value.includes('@')) {
-    emailValidationMsg.value = 'Insert a valid email'
-  } else {
-    emailValidationMsg.value = undefined
+const email = useValidation((field) => {
+  if (!field.includes('@')) {
+    return 'Insert a valid email'
   }
-}
+})
 
-const password = ref('')
-const passwordValidationMsg = ref<string | undefined>(undefined)
-
-function validatePassword() {
-  if (password.value === '') {
-    passwordValidationMsg.value = 'Insert a valid password'
-  } else {
-    passwordValidationMsg.value = undefined
+const password = useValidation((field) => {
+  if (field === '') {
+    return 'Insert a valid password'
   }
-}
+})
 
 function onSubmit() {
-  validateEmail()
-  validatePassword()
+  email.validate()
+  password.validate()
+
   if (
-    emailValidationMsg.value === undefined &&
-    passwordValidationMsg.value === undefined
+    email.validationMsg === undefined &&
+    password.validationMsg === undefined
   ) {
     console.log(email.value, password.value)
   }
@@ -47,10 +38,10 @@ function onSubmit() {
           <template #label>Email</template>
           <template #input>
             <Input
-              v-model="email"
+              v-model="email.value"
               type="email"
-              :validation-msg="emailValidationMsg"
-              @blur="validateEmail"
+              :validation-msg="email.validationMsg"
+              @blur="email.validate"
             />
           </template>
         </FieldSet>
@@ -59,10 +50,10 @@ function onSubmit() {
           <template #label>Password</template>
           <template #input>
             <Input
-              v-model="password"
+              v-model="password.value"
               type="password"
-              :validation-msg="passwordValidationMsg"
-              @blur="validatePassword"
+              :validation-msg="password.validationMsg"
+              @blur="password.validate"
             />
           </template>
         </FieldSet>
