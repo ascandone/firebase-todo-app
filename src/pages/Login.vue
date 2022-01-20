@@ -5,10 +5,20 @@ import FieldSet from '@/components/FieldSet.vue'
 import Alert from '@/components/Alert.vue'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useEmailValidation, usePasswordValidation } from '@/validations'
+import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuth()
+
+watchEffect(() => {
+  const user = authStore.user
+  if (user !== null) {
+    console.log('redirecting..')
+    router.replace('/')
+  }
+})
 
 type AuthResponse =
   | { type: 'NOT_ASKED' }
