@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteLocation } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Home from './pages/Home.vue'
 import New from './pages/New.vue'
 import Edit from './pages/Edit.vue'
