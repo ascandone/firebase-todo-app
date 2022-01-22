@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useTodoItems } from '@/stores/todoItems'
 import {
   addDoc,
   collection,
@@ -18,7 +17,6 @@ const todosRef = collection(db, 'todos')
 
 const creationResponse = ref<RemoteLoading>({ type: 'NOT_ASKED' })
 
-const itemsStore = useTodoItems()
 const router = useRouter()
 async function handleSubmit(user: User, payload: Payload) {
   creationResponse.value = { type: 'LOADING' }
