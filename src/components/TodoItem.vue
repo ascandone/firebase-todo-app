@@ -3,8 +3,10 @@ import Checkbox from './Checkbox.vue'
 import FavoriteButton from './FavoriteButton.vue'
 import DateChip from './DateChip.vue'
 import { ITodoItem } from '@/types'
+import { doc, getFirestore, writeBatch } from 'firebase/firestore'
 
 interface Props {
+  id: string
   item: ITodoItem
 }
 
@@ -12,6 +14,19 @@ const props = defineProps<Props>()
 
 export interface Emits {
   (e: 'clicked-edit'): void
+}
+
+const db = getFirestore()
+
+const handleToggle = async () => {
+  const docRef = doc(db, 'todos', props.id)
+  const batch = writeBatch(db)
+
+  batch.update(docRef, {
+    completed: !props.item.completed,
+  })
+
+  batch.commit()
 }
 
 const emits = defineEmits<Emits>()
@@ -26,7 +41,10 @@ const emits = defineEmits<Emits>()
     }"
   >
     <div class="mt-2">
-      <Checkbox v-model="props.item.completed" />
+      <Checkbox
+        :model-value="props.item.completed"
+        @update:model-value="handleToggle"
+      />
     </div>
     <div class="w-3"></div>
     <div @dblclick="emits('clicked-edit')" @touchend="emits('clicked-edit')">
