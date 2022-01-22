@@ -67,7 +67,7 @@ const collapsedCompleted = ref(false)
 </script>
 
 <template>
-  <div class="w-screen h-screen px-3">
+  <div class="px-3">
     <div class="h-4"></div>
     <div>
       <h2 class="font-bold text-4xl">Today</h2>

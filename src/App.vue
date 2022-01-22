@@ -16,5 +16,7 @@ onAuthStateChanged(auth, (user) => {
 </script>
 
 <template>
-  <RouterView v-if="!loadingUser"></RouterView>
+  <div class="mx-auto max-w-md">
+    <RouterView v-if="!loadingUser"></RouterView>
+  </div>
 </template>
