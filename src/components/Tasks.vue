@@ -2,6 +2,7 @@
 import { computed, onUnmounted, TransitionGroup } from 'vue'
 import TodoItem from '@/components/TodoItem.vue'
 import Button from '@/components/Button.vue'
+import Alert from '@/components/Alert.vue'
 import ChevronIcon from '@/components/ChevronIcon.vue'
 import { PlusIcon } from '@heroicons/vue/solid'
 import { ITodoItem } from '@/types'
@@ -184,6 +185,10 @@ const handleToggleFavorite = async (id: string, favorited: boolean) => {
       </h4>
     </div>
     <div class="h-5"></div>
+
+    <Alert v-if="todosDocs !== undefined && todosDocs.length === 0">
+      Click the `+` button to create a new task.
+    </Alert>
 
     <TransitionGroup
       tag="div"
