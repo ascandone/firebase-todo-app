@@ -24,16 +24,17 @@ async function handleSubmit(user: User, payload: Payload) {
   creationResponse.value = { type: 'LOADING' }
 
   // TODO handle err
-  const res = await addDoc(todosRef, {
+  addDoc(todosRef, {
     uid: user.uid,
     title: payload.title,
-    description: payload.description,
     createdAt: serverTimestamp(),
     completed: false,
     favorited: false,
+    ...(payload.description === undefined
+      ? {}
+      : { description: payload.description }),
   })
 
-  console.log(res)
   router.back()
 }
 </script>
