@@ -13,7 +13,12 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 <template>
   <button
-    class="font-bold border leading-none px-3 py-2 rounded-md shadow bg-gray-50 hover:bg-gray-100 transition-colors duration-100"
+    :class="{
+      'font-semibold shadow border leading-none px-3 py-2 rounded-md transition-colors duration-100': true,
+      ' bg-gray-50 hover:bg-gray-100': props.variant === 'primary',
+      'bg-gray-50 text-rose-800 hover:bg-rose-800 hover:text-rose-100':
+        props.variant === 'danger',
+    }"
     :type="props.type"
   >
     <slot />
