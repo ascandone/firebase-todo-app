@@ -3,43 +3,20 @@ import Checkbox from './Checkbox.vue'
 import FavoriteButton from './FavoriteButton.vue'
 import DateChip from './DateChip.vue'
 import { ITodoItem } from '@/types'
-import { doc, getFirestore, writeBatch } from 'firebase/firestore'
 
-interface Props {
+export interface Props {
   id: string
   item: ITodoItem
 }
 
-const props = defineProps<Props>()
-
 export interface Emits {
   (e: 'clicked-edit'): void
+  (e: 'toggle-completed', value: boolean): void
+  (e: 'toggle-favorited', value: boolean): void
 }
 
-const db = getFirestore()
-const docRef = doc(db, 'todos', props.id)
-
-const handleToggleCompleted = async () => {
-  const batch = writeBatch(db)
-
-  batch.update(docRef, {
-    completed: !props.item.completed,
-  })
-
-  batch.commit()
-}
-
-const handleToggleFavorite = async () => {
-  const batch = writeBatch(db)
-
-  batch.update(docRef, {
-    favorited: !props.item.favorited,
-  })
-
-  batch.commit()
-}
-
-const emits = defineEmits<Emits>()
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
 </script>
 <template>
   <div
@@ -53,11 +30,11 @@ const emits = defineEmits<Emits>()
     <div class="mt-2">
       <Checkbox
         :model-value="props.item.completed"
-        @update:model-value="handleToggleCompleted"
+        @update:model-value="(v) => emit('toggle-completed', v)"
       />
     </div>
     <div class="w-3"></div>
-    <div @dblclick="emits('clicked-edit')" @touchend="emits('clicked-edit')">
+    <div @dblclick="emit('clicked-edit')" @touchend="emit('clicked-edit')">
       <h3 class="font-bold leading-none text-gray-900">
         {{ props.item.title }}
       </h3>
@@ -79,7 +56,7 @@ const emits = defineEmits<Emits>()
       <div class="h-2" v-if="props.item.description != undefined"></div>
       <FavoriteButton
         :model-value="props.item.favorited"
-        @update:model-value="handleToggleFavorite"
+        @update:model-value="(v) => emit('toggle-favorited', v)"
       />
     </div>
   </div>

@@ -3,20 +3,25 @@ import { computed, onUnmounted, TransitionGroup } from 'vue'
 import TodoItem from '@/components/TodoItem.vue'
 import ChevronIcon from '@/components/ChevronIcon.vue'
 import { PlusIcon } from '@heroicons/vue/solid'
-import { useRouter } from 'vue-router'
 import { ITodoItem } from '@/types'
 import { ref } from 'vue'
 import { User } from 'firebase/auth'
 import {
+  addDoc,
   collection,
   CollectionReference,
+  doc,
   getFirestore,
   onSnapshot,
   orderBy,
   query,
+  QueryDocumentSnapshot,
+  serverTimestamp,
   where,
+  writeBatch,
 } from 'firebase/firestore'
-
+import EditForm, { Payload } from '@/components/EditForm.vue'
+import Modal from '@/components/Modal.vue'
 export interface Props {
   user: User
 }
@@ -29,46 +34,130 @@ const todosRef = collection(db, 'todos') as CollectionReference<ITodoItem>
 const q = query(
   todosRef,
   where('uid', '==', props.user.uid),
-  orderBy('createdAt')
+  orderBy('createdAt', 'desc')
 )
 
-const items = ref<{ id: string; data: ITodoItem }[] | undefined>(undefined)
+const todosDocs = ref<QueryDocumentSnapshot<ITodoItem>[] | undefined>(undefined)
 
 const activeItems = computed(() =>
-  items.value?.filter((item) => !item.data.completed)
+  todosDocs.value?.filter((item) => !item.data().completed)
 )
 
 const completedItems = computed(() =>
-  items.value?.filter((item) => item.data.completed)
+  todosDocs.value?.filter((item) => item.data().completed)
 )
 
 const unsubscribe = onSnapshot(q, (snapshot) => {
-  items.value = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    data: doc.data(),
-  }))
+  todosDocs.value = snapshot.docs
 })
 
 onUnmounted(() => {
   unsubscribe()
 })
 
-const router = useRouter()
+type ModalState =
+  | { type: 'EDITING'; doc: QueryDocumentSnapshot<ITodoItem> }
+  | { type: 'CREATING' }
+
+const activeModal = ref<ModalState | undefined>(undefined)
 
 function addNewTask() {
-  router.push('/new')
+  activeModal.value = { type: 'CREATING' }
 }
 
-function editTask(id: string) {
-  router.push(`/edit/${id}`)
+function editTask(doc: QueryDocumentSnapshot<ITodoItem>) {
+  activeModal.value = { type: 'EDITING', doc }
+}
+
+function handleCloseModal() {
+  activeModal.value = undefined
 }
 
 const collapsedCompleted = ref(false)
+
+function handleSubmit(payload: Payload) {
+  if (activeModal.value === undefined) {
+    return
+  }
+
+  if (activeModal.value.type === 'EDITING') {
+    const batch = writeBatch(db)
+
+    batch.update(doc(db, 'todos', activeModal.value.doc.id), {
+      title: payload.title,
+      ...(payload.description === undefined
+        ? {}
+        : { description: payload.description }),
+    })
+
+    batch.commit()
+  }
+
+  if (activeModal.value.type === 'CREATING') {
+    addDoc(todosRef, {
+      uid: props.user.uid,
+      title: payload.title,
+      createdAt: serverTimestamp(),
+      completed: false,
+      favorited: false,
+      ...(payload.description === undefined
+        ? {}
+        : { description: payload.description }),
+    })
+  }
+
+  activeModal.value = undefined
+}
+
+const setCompleted = async (id: string, completed: boolean) => {
+  const batch = writeBatch(db)
+
+  batch.update(doc(db, 'todos', id), {
+    completed,
+  })
+
+  batch.commit()
+}
+
+const handleToggleFavorite = async (id: string, favorited: boolean) => {
+  const batch = writeBatch(db)
+
+  batch.update(doc(db, 'todos', id), {
+    favorited,
+  })
+
+  batch.commit()
+}
 </script>
 
 <template>
-  <div class="px-3">
-    <div class="h-4"></div>
+  <Modal
+    v-if="activeModal !== undefined && activeModal.type === 'EDITING'"
+    header="Edit task"
+    @closed-modal="handleCloseModal"
+  >
+    <EditForm
+      submit-label="Save"
+      :initial-title="activeModal.doc.data().title"
+      :initial-description="activeModal.doc.data().description"
+      @submit="handleSubmit"
+    />
+  </Modal>
+
+  <Modal
+    v-if="activeModal !== undefined && activeModal.type === 'CREATING'"
+    header="New task"
+    @closed-modal="handleCloseModal"
+  >
+    <EditForm
+      submit-label="Create"
+      initial-title=""
+      initial-description=""
+      @submit="handleSubmit"
+    />
+  </Modal>
+
+  <div class="px-3 mt-4">
     <div>
       <h2 class="font-bold text-4xl">Tasks</h2>
       <div class="h-1"></div>
@@ -86,11 +175,13 @@ const collapsedCompleted = ref(false)
       enter-from-class="opacity-0"
       leave-to-class="opacity-0"
     >
-      <div v-for="todoItem in activeItems" :key="todoItem.id">
+      <div v-for="doc in activeItems" :key="doc.id">
         <TodoItem
-          @clicked-edit="editTask(todoItem.id)"
-          :id="todoItem.id"
-          :item="todoItem.data"
+          @clicked-edit="editTask(doc)"
+          :id="doc.id"
+          :item="doc.data()"
+          @toggle-completed="(value) => setCompleted(doc.id, value)"
+          @toggle-favorited="(value) => handleToggleFavorite(doc.id, value)"
         />
       </div>
 
@@ -105,14 +196,16 @@ const collapsedCompleted = ref(false)
       </div>
 
       <div
-        v-for="todoItem in completedItems"
+        v-for="doc in completedItems"
         :class="{ 'invisible ': collapsedCompleted }"
-        :key="todoItem.id"
+        :key="doc.id"
       >
         <TodoItem
-          @clicked-edit="editTask(todoItem.id)"
-          :id="todoItem.id"
-          :item="todoItem.data"
+          @clicked-edit="editTask(doc)"
+          :id="doc.id"
+          :item="doc.data()"
+          @toggle-completed="(value) => setCompleted(doc.id, value)"
+          @toggle-favorited="(value) => handleToggleFavorite(doc.id, value)"
         />
       </div>
     </TransitionGroup>
