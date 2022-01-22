@@ -9,6 +9,7 @@ import { ref } from 'vue'
 import { User } from 'firebase/auth'
 import {
   collection,
+  CollectionReference,
   getFirestore,
   onSnapshot,
   orderBy,
@@ -23,7 +24,8 @@ export interface Props {
 const props = defineProps<Props>()
 
 const db = getFirestore()
-const todosRef = collection(db, 'todos')
+const todosRef = collection(db, 'todos') as CollectionReference<ITodoItem>
+
 const q = query(
   todosRef,
   where('uid', '==', props.user.uid),
@@ -43,7 +45,7 @@ const completedItems = computed(() =>
 const unsubscribe = onSnapshot(q, (snapshot) => {
   items.value = snapshot.docs.map((doc) => ({
     id: doc.id,
-    data: doc.data() as ITodoItem,
+    data: doc.data(),
   }))
 })
 

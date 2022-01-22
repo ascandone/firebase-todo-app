@@ -14,6 +14,11 @@ export interface Props {
   initialDescription?: string
 }
 
+export interface Payload {
+  title: string
+  description?: string
+}
+
 export interface Emits {
   (e: 'submit', value: Payload): void
 }
@@ -24,11 +29,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const router = useRouter()
-
-export interface Payload {
-  title: string
-  description?: string
-}
 
 const title = ref(props.initialTitle)
 const description = ref(props.initialDescription)

@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { doc, getDoc, getFirestore, writeBatch } from 'firebase/firestore'
+import {
+  CollectionReference,
+  doc,
+  DocumentReference,
+  getDoc,
+  getFirestore,
+  writeBatch,
+} from 'firebase/firestore'
 
 import EditForm, { Payload } from '../components/EditForm.vue'
 import { ITodoItem } from '@/types'
@@ -10,7 +17,11 @@ const route = useRoute()
 const router = useRouter()
 
 const db = getFirestore()
-const itemRef = doc(db, 'todos', route.params.id as string)
+const itemRef = doc(
+  db,
+  'todos',
+  route.params.id as string
+) as DocumentReference<ITodoItem>
 const itemData = ref<ITodoItem | undefined>(undefined)
 
 onMounted(async () => {
