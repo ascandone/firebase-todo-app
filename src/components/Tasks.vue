@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onUnmounted, TransitionGroup } from 'vue'
 import TodoItem from '@/components/TodoItem.vue'
+import Button from '@/components/Button.vue'
 import ChevronIcon from '@/components/ChevronIcon.vue'
 import { PlusIcon } from '@heroicons/vue/solid'
 import { ITodoItem } from '@/types'
@@ -10,6 +11,7 @@ import {
   addDoc,
   collection,
   CollectionReference,
+  deleteDoc,
   doc,
   getFirestore,
   onSnapshot,
@@ -109,6 +111,17 @@ function handleSubmit(payload: Payload) {
   activeModal.value = undefined
 }
 
+function handleDelete() {
+  if (activeModal.value === undefined) {
+    return
+  }
+
+  if (activeModal.value.type === 'EDITING') {
+    deleteDoc(doc(db, 'todos', activeModal.value.doc.id))
+  }
+  activeModal.value = undefined
+}
+
 const setCompleted = async (id: string, completed: boolean) => {
   const batch = writeBatch(db)
 
@@ -141,7 +154,11 @@ const handleToggleFavorite = async (id: string, favorited: boolean) => {
       :initial-title="activeModal.doc.data().title"
       :initial-description="activeModal.doc.data().description"
       @submit="handleSubmit"
-    />
+    >
+      <template #secondary-cta>
+        <Button variant="danger" @click="handleDelete">Delete</Button>
+      </template>
+    </EditForm>
   </Modal>
 
   <Modal

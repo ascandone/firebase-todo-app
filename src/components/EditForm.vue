@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import FieldSet from './FieldSet.vue'
-import Input from './Input.vue'
-import TextArea from './TextArea.vue'
 import { ref } from 'vue'
-import Button from '../components/Button.vue'
+import FieldSet from '@/components/FieldSet.vue'
+import Input from '@/components/Input.vue'
+import TextArea from '@/components/TextArea.vue'
+import Button from '@/components/Button.vue'
 
 export interface Props {
   submitLabel: string
@@ -62,7 +62,8 @@ function handleSubmit() {
 
     <div class="h-5"></div>
 
-    <div class="flex w-full justify-end">
+    <div class="flex w-full justify-end gap-x-4">
+      <slot name="secondary-cta" />
       <Button type="submit">
         {{ props.submitLabel }}
       </Button>
