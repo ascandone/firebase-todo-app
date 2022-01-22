@@ -17,13 +17,23 @@ export interface Emits {
 }
 
 const db = getFirestore()
+const docRef = doc(db, 'todos', props.id)
 
-const handleToggle = async () => {
-  const docRef = doc(db, 'todos', props.id)
+const handleToggleCompleted = async () => {
   const batch = writeBatch(db)
 
   batch.update(docRef, {
     completed: !props.item.completed,
+  })
+
+  batch.commit()
+}
+
+const handleToggleFavorite = async () => {
+  const batch = writeBatch(db)
+
+  batch.update(docRef, {
+    favorited: !props.item.favorited,
   })
 
   batch.commit()
@@ -43,7 +53,7 @@ const emits = defineEmits<Emits>()
     <div class="mt-2">
       <Checkbox
         :model-value="props.item.completed"
-        @update:model-value="handleToggle"
+        @update:model-value="handleToggleCompleted"
       />
     </div>
     <div class="w-3"></div>
@@ -67,7 +77,10 @@ const emits = defineEmits<Emits>()
     <div class="flex-1"></div>
     <div>
       <div class="h-2" v-if="props.item.description != undefined"></div>
-      <FavoriteButton v-model="props.item.favorited" />
+      <FavoriteButton
+        :model-value="props.item.favorited"
+        @update:model-value="handleToggleFavorite"
+      />
     </div>
   </div>
 </template>
