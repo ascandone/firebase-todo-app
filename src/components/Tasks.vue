@@ -57,8 +57,8 @@ function addNewTask() {
   router.push('/new')
 }
 
-function editTask(todoItem: ITodoItem) {
-  router.push(`/edit/${todoItem.id}`)
+function editTask(id: string) {
+  router.push(`/edit/${id}`)
 }
 
 const collapsedCompleted = ref(false)
@@ -82,7 +82,11 @@ const collapsedCompleted = ref(false)
       leave-to-class="opacity-0"
     >
       <div v-for="todoItem in activeItems" :key="todoItem.id">
-        <TodoItem :id="todoItem.id" :item="todoItem.data" />
+        <TodoItem
+          @clicked-edit="editTask(todoItem.id)"
+          :id="todoItem.id"
+          :item="todoItem.data"
+        />
       </div>
 
       <div
@@ -100,11 +104,15 @@ const collapsedCompleted = ref(false)
         :class="{ 'invisible ': collapsedCompleted }"
         :key="todoItem.id"
       >
-        <TodoItem :id="todoItem.id" :item="todoItem.data" />
+        <TodoItem
+          @clicked-edit="editTask(todoItem.id)"
+          :id="todoItem.id"
+          :item="todoItem.data"
+        />
       </div>
     </TransitionGroup>
 
-    <div class="fixed bottom-0 right-0 px-4 py-4">
+    <div class="fixed bottom-0 right-0 px-4 py-4 z-20">
       <button
         @click="addNewTask"
         class="border shadow-xl h-14 w-14 rounded-full bg-pink-500 text-white flex items-center justify-center"
