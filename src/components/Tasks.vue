@@ -70,9 +70,12 @@ const collapsedCompleted = ref(false)
   <div class="px-3">
     <div class="h-4"></div>
     <div>
-      <h2 class="font-bold text-4xl">Today</h2>
+      <h2 class="font-bold text-4xl">Tasks</h2>
       <div class="h-1"></div>
-      <h4 class="text-gray-600">Friday, May 24</h4>
+      <h4 class="text-gray-600 text-sm">
+        Logged in as
+        <pre class="inline">{{ props.user.email }}</pre>
+      </h4>
     </div>
     <div class="h-5"></div>
 
