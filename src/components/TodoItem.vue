@@ -38,7 +38,7 @@ const emit = defineEmits<Emits>()
       <h3 class="font-bold leading-none text-gray-900">
         {{ props.item.title }}
       </h3>
-      <div class="flex items-start">
+      <div class="flex items-start select-none">
         <p
           v-if="props.item.description !== undefined"
           class="mt-1 text-gray-600 text-sm max-w-sm w-full"
