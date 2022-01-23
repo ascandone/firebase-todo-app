@@ -25,6 +25,8 @@ import {
 } from 'firebase/firestore'
 import EditForm, { Payload } from '@/components/EditForm.vue'
 import Modal from '@/components/Modal.vue'
+import { addTask, deleteTask, editTask, setCompleted, setFavorite } from '@/api'
+
 export interface Props {
   user: User
 }
@@ -64,11 +66,11 @@ type ModalState =
 
 const activeModal = ref<ModalState | undefined>(undefined)
 
-function addNewTask() {
+function handleClickNew() {
   activeModal.value = { type: 'CREATING' }
 }
 
-function editTask(doc: QueryDocumentSnapshot<ITodoItem>) {
+function handleClickEdit(doc: QueryDocumentSnapshot<ITodoItem>) {
   activeModal.value = { type: 'EDITING', doc }
 }
 
@@ -84,29 +86,11 @@ function handleSubmit(payload: Payload) {
   }
 
   if (activeModal.value.type === 'EDITING') {
-    const batch = writeBatch(db)
-
-    batch.update(doc(db, 'todos', activeModal.value.doc.id), {
-      title: payload.title,
-      ...(payload.description === undefined
-        ? {}
-        : { description: payload.description }),
-    })
-
-    batch.commit()
+    editTask(activeModal.value.doc.id, payload)
   }
 
   if (activeModal.value.type === 'CREATING') {
-    addDoc(todosRef, {
-      uid: props.user.uid,
-      title: payload.title,
-      createdAt: serverTimestamp(),
-      completed: false,
-      favorited: false,
-      ...(payload.description === undefined
-        ? {}
-        : { description: payload.description }),
-    })
+    addTask(todosRef, props.user, payload)
   }
 
   activeModal.value = undefined
@@ -118,29 +102,10 @@ function handleDelete() {
   }
 
   if (activeModal.value.type === 'EDITING') {
-    deleteDoc(doc(db, 'todos', activeModal.value.doc.id))
+    deleteTask(activeModal.value.doc.id)
   }
+
   activeModal.value = undefined
-}
-
-const setCompleted = async (id: string, completed: boolean) => {
-  const batch = writeBatch(db)
-
-  batch.update(doc(db, 'todos', id), {
-    completed,
-  })
-
-  batch.commit()
-}
-
-const handleToggleFavorite = async (id: string, favorited: boolean) => {
-  const batch = writeBatch(db)
-
-  batch.update(doc(db, 'todos', id), {
-    favorited,
-  })
-
-  batch.commit()
 }
 </script>
 
@@ -199,11 +164,11 @@ const handleToggleFavorite = async (id: string, favorited: boolean) => {
     >
       <div v-for="doc in activeItems" :key="doc.id">
         <TodoItem
-          @clicked-edit="editTask(doc)"
+          @clicked-edit="handleClickEdit(doc)"
           :id="doc.id"
           :item="doc.data()"
           @toggle-completed="(value) => setCompleted(doc.id, value)"
-          @toggle-favorited="(value) => handleToggleFavorite(doc.id, value)"
+          @toggle-favorited="(value) => setFavorite(doc.id, value)"
         />
       </div>
 
@@ -223,18 +188,18 @@ const handleToggleFavorite = async (id: string, favorited: boolean) => {
         :key="doc.id"
       >
         <TodoItem
-          @clicked-edit="editTask(doc)"
+          @clicked-edit="handleClickEdit(doc)"
           :id="doc.id"
           :item="doc.data()"
           @toggle-completed="(value) => setCompleted(doc.id, value)"
-          @toggle-favorited="(value) => handleToggleFavorite(doc.id, value)"
+          @toggle-favorited="(value) => setFavorite(doc.id, value)"
         />
       </div>
     </TransitionGroup>
 
     <div class="fixed bottom-0 right-0 px-4 py-4 z-20">
       <button
-        @click="addNewTask"
+        @click="handleClickNew"
         class="border shadow-xl h-14 w-14 rounded-full bg-pink-500 text-white flex items-center justify-center"
       >
         <PlusIcon class="h-8 w-8" />
