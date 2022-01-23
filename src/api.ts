@@ -9,12 +9,7 @@ import {
   deleteDoc,
   doc,
   getFirestore,
-  onSnapshot,
-  orderBy,
-  query,
-  QueryDocumentSnapshot,
   serverTimestamp,
-  where,
   writeBatch,
 } from 'firebase/firestore'
 import { Payload } from './components/EditForm.vue'
@@ -35,6 +30,14 @@ const firebaseApp = initializeApp(firebaseConfig)
 
 const db = getFirestore()
 
+// ### Queries
+
+export const todosRef = collection(
+  db,
+  'todos'
+) as CollectionReference<ITodoItem>
+
+// ### Actions
 export async function setFavorite(id: string, favorited: boolean) {
   const batch = writeBatch(db)
 

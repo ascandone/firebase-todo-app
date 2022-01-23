@@ -9,23 +9,23 @@ import { ITodoItem } from '@/types'
 import { ref } from 'vue'
 import { User } from 'firebase/auth'
 import {
-  addDoc,
-  collection,
-  CollectionReference,
-  deleteDoc,
-  doc,
-  getFirestore,
   onSnapshot,
   orderBy,
   query,
   QueryDocumentSnapshot,
-  serverTimestamp,
   where,
-  writeBatch,
 } from 'firebase/firestore'
 import EditForm, { Payload } from '@/components/EditForm.vue'
 import Modal from '@/components/Modal.vue'
-import { addTask, deleteTask, editTask, setCompleted, setFavorite } from '@/api'
+import {
+  addTask,
+  deleteTask,
+  editTask,
+  setCompleted,
+  setFavorite,
+  todosRef,
+} from '@/api'
+import { useSnapshot } from '@/utils/useSnapshot'
 
 export interface Props {
   user: User
@@ -33,16 +33,13 @@ export interface Props {
 
 const props = defineProps<Props>()
 
-const db = getFirestore()
-const todosRef = collection(db, 'todos') as CollectionReference<ITodoItem>
-
-const q = query(
-  todosRef,
-  where('uid', '==', props.user.uid),
-  orderBy('createdAt', 'desc')
+const todosDocs = useSnapshot(
+  query(
+    todosRef,
+    where('uid', '==', props.user.uid),
+    orderBy('createdAt', 'desc')
+  )
 )
-
-const todosDocs = ref<QueryDocumentSnapshot<ITodoItem>[] | undefined>(undefined)
 
 const activeItems = computed(() =>
   todosDocs.value?.filter((item) => !item.data().completed)
@@ -51,14 +48,6 @@ const activeItems = computed(() =>
 const completedItems = computed(() =>
   todosDocs.value?.filter((item) => item.data().completed)
 )
-
-const unsubscribe = onSnapshot(q, (snapshot) => {
-  todosDocs.value = snapshot.docs
-})
-
-onUnmounted(() => {
-  unsubscribe()
-})
 
 type ModalState =
   | { type: 'EDITING'; doc: QueryDocumentSnapshot<ITodoItem> }
