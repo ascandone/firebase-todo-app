@@ -13,7 +13,10 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 </script>
 <template>
-  <div class="absolute bg-gray-800 bg-opacity-40 w-full inset-0 z-40 p-4">
+  <div
+    class="absolute bg-gray-800 bg-opacity-40 w-full inset-0 z-40 p-4"
+    @click.self="emit('closed-modal')"
+  >
     <div class="mx-auto max-w-md bg-white rounded-md px-4 py-3">
       <div class="flex">
         <h2 class="font-bold text-2xl">{{ props.header }}</h2>
