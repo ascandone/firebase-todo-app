@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, TransitionGroup } from 'vue'
+import { computed, TransitionGroup } from 'vue'
 import TodoItem from '@/components/TodoItem.vue'
 import Button from '@/components/Button.vue'
 import Alert from '@/components/Alert.vue'
@@ -9,7 +9,6 @@ import { ITodoItem } from '@/types'
 import { ref } from 'vue'
 import { User } from 'firebase/auth'
 import {
-  onSnapshot,
   orderBy,
   query,
   QueryDocumentSnapshot,
