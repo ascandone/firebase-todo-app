@@ -25,6 +25,8 @@ import {
   todosRef,
 } from '@/api'
 import { useSnapshot } from '@/utils/useSnapshot'
+import { getAuth, signOut } from 'firebase/auth'
+import { router } from '@/routes'
 
 export interface Props {
   user: User
@@ -95,6 +97,12 @@ function handleDelete() {
 
   activeModal.value = undefined
 }
+
+function handleClickSignOut() {
+  const auth = getAuth()
+  signOut(auth)
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -135,6 +143,9 @@ function handleDelete() {
       <h4 class="text-gray-600 text-sm">
         Logged in as
         <pre class="inline">{{ props.user.email }}</pre>
+        <span class="mx-1">
+          <Button variant="ghost" @click="handleClickSignOut">Log out</Button>
+        </span>
       </h4>
     </div>
     <div class="h-5"></div>
