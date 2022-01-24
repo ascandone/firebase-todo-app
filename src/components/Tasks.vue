@@ -101,7 +101,6 @@ function handleDelete() {
 function handleClickSignOut() {
   const auth = getAuth()
   signOut(auth)
-  router.push('/login')
 }
 </script>
 

@@ -7,7 +7,7 @@ const authStore = useAuth()
 const router = useRouter()
 watchEffect(() => {
   if (authStore.user === null) {
-    router.push('/signup')
+    router.push('/login')
   }
 })
 </script>
