@@ -3,13 +3,13 @@ import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import FieldSet from '@/components/FieldSet.vue'
 import Alert from '@/components/Alert.vue'
+import Link from '@/components/Link.vue'
 import { useValidation } from '@/useValidation'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useEmailValidation, usePasswordValidation } from '@/validations'
 import { RemoteLoading } from '@/remoteLoading'
-
 const router = useRouter()
 
 const authResponse = ref<RemoteLoading>({ type: 'NOT_ASKED' })
@@ -108,6 +108,12 @@ async function onSubmit() {
           <Button type="submit">Signup</Button>
         </div>
       </form>
+
+      <div class="mt-10">
+        <p class="text-sm text-center text-gray-700">
+          Already have an account? <Link to="/login">Sign in</Link>
+        </p>
+      </div>
     </div>
   </div>
 </template>

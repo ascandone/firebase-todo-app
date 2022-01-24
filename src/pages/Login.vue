@@ -3,6 +3,7 @@ import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import FieldSet from '@/components/FieldSet.vue'
 import Alert from '@/components/Alert.vue'
+import Link from '@/components/Link.vue'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 import { ref, watchEffect } from 'vue'
@@ -97,6 +98,12 @@ async function onSubmit() {
           <Button type="submit">Login</Button>
         </div>
       </form>
+
+      <div class="mt-10">
+        <p class="text-sm text-center text-gray-700">
+          Don't have an account? <Link to="/signup">Register now</Link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
