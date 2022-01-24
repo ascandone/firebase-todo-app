@@ -5,8 +5,7 @@ const authStore = useAuth()
 
 const router = useRouter()
 if (authStore.user === null) {
-  console.log('redirecting..')
-  router.push('/login')
+  router.push('/signup')
 }
 </script>
 <template>
